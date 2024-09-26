@@ -1,59 +1,45 @@
-use borsh::{BorshDeserialize, BorshSerialize};
-
 #[cfg(not(feature = "no-entrypoint"))]
 pub mod entrypoint {
     use borsh::{BorshDeserialize, BorshSerialize};
     use solana_program::{
-        account_info::{next_account_info, AccountInfo},
-        entrypoint,
-        entrypoint::ProgramResult,
-        msg,
-        pubkey::Pubkey,
+        account_info::AccountInfo, entrypoint, entrypoint::ProgramResult,
+        program_error::ProgramError, pubkey::Pubkey,
     };
 
-    use crate::Instruction;
-
-    // declare and export the program's entrypoint
     entrypoint!(process_instruction);
 
-    // program entrypoint's implementation
     pub fn process_instruction(
         _program_id: &Pubkey,
         _accounts: &[AccountInfo],
         _instruction_data: &[u8],
     ) -> ProgramResult {
-        let data = Instruction::try_from_slice(_instruction_data);
+        let command = Card::try_from_slice(_instruction_data);
 
-        msg!("{:?}", data);
+        // let account_iter = &mut _accounts.iter();
+        // let creater = next_account_info(account_iter)?;
 
-        msg!(&format!("program_id: {}", _program_id));
-        msg!(&format!("accounts: {:?}", _accounts));
-        msg!(&format!(
-            "instruction_data: {:?}",
-            String::from_utf8_lossy(_instruction_data)
-        ));
-        let account_iter = &mut _accounts.iter();
-        let account = next_account_info(account_iter)?;
-
-        if account.owner == _program_id {
-            msg!("Yes it is right account!");
-        } else {
-            msg!("Nope!");
+        #[allow(unused)]
+        match command {
+            Err(_) => return Err(ProgramError::InvalidArgument),
+            Ok(Card::Create { id, name }) => {
+                todo!("Create account with card info");
+            }
+            Ok(Card::Update { id, name }) => {
+                todo!("Update account with new card info")
+            }
+            Ok(Card::Delete) => {}
+            _ => {
+                todo!("Delete accoun of given card")
+            }
         }
 
-        // gracefully exit the program
         Ok(())
     }
 
-    #[derive(BorshSerialize, BorshDeserialize)]
-    struct GreetData {
-        greeted_count: u32,
+    #[derive(BorshSerialize, BorshDeserialize, Debug)]
+    pub(crate) enum Card {
+        Create { id: u64, name: String },
+        Update { id: u64, name: String },
+        Delete,
     }
-}
-
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
-enum Instruction {
-    CreateCard { id: u64, name: String, bio: String },
-    UpdateCard { id: u64, name: String, bio: String },
-    DeleteCard { id: u64 },
 }
