@@ -7,8 +7,9 @@ import {
 import { getKeypairFromFile } from "@solana-developers/helpers";
 import * as borsh from "borsh";
 import { cardDataSchema } from "./schemas.mjs";
+import * as process from "process";
 
-const programId = new PublicKey("ANLXhXenwv3Psobubam7aPNTcVVN1TXUFVosPmhCM2Rq");
+const programId = new PublicKey(process.env.PROG);
 
 // Connect to a solana cluster. Either to your local test validator or to devnet
 const connection = new Connection("http://localhost:8899", "confirmed");
@@ -40,7 +41,7 @@ tx.add(
       {
         pubkey: keyPair.publicKey,
         isSigner: true,
-        isWritable: false,
+        isWritable: true,
       },
     ],
     data: Buffer.from(encoded),
