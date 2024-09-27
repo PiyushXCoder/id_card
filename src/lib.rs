@@ -1,3 +1,6 @@
+pub(crate) mod instructions;
+pub(crate) mod states;
+
 #[cfg(not(feature = "no-entrypoint"))]
 pub mod entrypoint {
     use borsh::{BorshDeserialize, BorshSerialize};
