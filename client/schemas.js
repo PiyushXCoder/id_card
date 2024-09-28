@@ -2,7 +2,7 @@ const cardDataSchema = {
   enum: [
     {
       struct: {
-        CreateCard: { struct: { id: "u64", name: "string", bio: "string" } },
+        CreateCard: { struct: { name: "string", bio: "string", bump: "u8" } },
       },
     },
     {

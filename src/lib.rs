@@ -5,11 +5,13 @@ pub(crate) mod states;
 pub mod entrypoint {
     use borsh::{BorshDeserialize, BorshSerialize};
     use solana_program::{
-        account_info::AccountInfo, entrypoint, entrypoint::ProgramResult,
-        program_error::ProgramError, pubkey::Pubkey,
+        account_info::AccountInfo, entrypoint::ProgramResult, program_error::ProgramError,
+        pubkey::Pubkey,
     };
 
-    entrypoint!(process_instruction);
+    use crate::instructions;
+
+    solana_program::entrypoint!(process_instruction);
 
     pub fn process_instruction(
         _program_id: &Pubkey,
@@ -18,16 +20,13 @@ pub mod entrypoint {
     ) -> ProgramResult {
         let command = Card::try_from_slice(_instruction_data);
 
-        // let account_iter = &mut _accounts.iter();
-        // let creater = next_account_info(account_iter)?;
-
         #[allow(unused)]
         match command {
             Err(_) => return Err(ProgramError::InvalidArgument),
-            Ok(Card::Create { id, name }) => {
-                todo!("Create account with card info");
+            Ok(Card::Create { name, bio, bump }) => {
+                instructions::create_card_account(_program_id, _accounts, &name, &bio, bump);
             }
-            Ok(Card::Update { id, name }) => {
+            Ok(Card::Update { field, value }) => {
                 todo!("Update account with new card info")
             }
             Ok(Card::Delete) => {}
@@ -40,9 +39,9 @@ pub mod entrypoint {
     }
 
     #[derive(BorshSerialize, BorshDeserialize, Debug)]
-    pub(crate) enum Card {
-        Create { id: u64, name: String },
-        Update { id: u64, name: String },
+    enum Card {
+        Create { name: String, bio: String, bump: u8 },
+        Update { field: String, value: String },
         Delete,
     }
 }

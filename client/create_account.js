@@ -1,12 +1,14 @@
 import {
   Connection,
   PublicKey,
+  SystemProgram,
+  SYSVAR_RENT_PUBKEY,
   Transaction,
   TransactionInstruction,
 } from "@solana/web3.js";
 import { getKeypairFromFile } from "@solana-developers/helpers";
 import * as borsh from "borsh";
-import { cardDataSchema } from "./schemas.mjs";
+import { cardDataSchema } from "./schemas.js";
 import * as process from "process";
 
 const programId = new PublicKey(process.env.PROG);
@@ -26,7 +28,12 @@ const tx = new Transaction({
   ...blockhashInfo,
 });
 
-const data = { CreateCard: { id: 1, name: "Jay", bio: "The bio" } };
+const [pda, bump] = PublicKey.findProgramAddressSync(
+  [keyPair.publicKey.toBuffer()],
+  programId,
+);
+
+const data = { CreateCard: { name: "Jay", bio: "The bio", bump: bump } };
 
 const encoded = borsh.serialize(cardDataSchema, data);
 
@@ -42,6 +49,16 @@ tx.add(
         pubkey: keyPair.publicKey,
         isSigner: true,
         isWritable: true,
+      },
+      {
+        pubkey: pda,
+        isSigner: false,
+        isWritable: true,
+      },
+      {
+        pubkey: SystemProgram.programId,
+        isSigner: false,
+        isWritable: false,
       },
     ],
     data: Buffer.from(encoded),

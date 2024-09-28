@@ -2,6 +2,7 @@ use borsh::{BorshDeserialize, BorshSerialize};
 
 #[derive(BorshDeserialize, BorshSerialize, Debug)]
 pub(crate) struct Card {
-    name: String,
-    bio: String,
+    pub(crate) name: String,
+    pub(crate) bio: String,
+    pub(crate) bump: u8,
 }
