@@ -2,17 +2,17 @@ const cardDataSchema = {
   enum: [
     {
       struct: {
-        CreateCard: { struct: { name: "string", bio: "string", bump: "u8" } },
+        Create: { struct: { name: "string", bio: "string", bump: "u8" } },
       },
     },
     {
       struct: {
-        UpdateCard: { struct: { id: "u64", name: "string", bio: "string" } },
+        Update: { struct: { name: "string", bio: "string" } },
       },
     },
     {
       struct: {
-        DeleteCard: { struct: { id: "u64" } },
+        Delete: { struct: { id: "u64" } },
       },
     },
   ],

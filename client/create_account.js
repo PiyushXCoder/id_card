@@ -32,7 +32,7 @@ const [pda, bump] = PublicKey.findProgramAddressSync(
   programId,
 );
 
-const data = { CreateCard: { name: "Jay", bio: "The bio", bump: bump } };
+const data = { Create: { name: "Jay", bio: "The bio", bump: bump } };
 
 const encoded = borsh.serialize(cardDataSchema, data);
 
