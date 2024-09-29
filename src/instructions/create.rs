@@ -2,7 +2,6 @@ use borsh::BorshSerialize;
 use solana_program::{
     account_info::{next_account_info, AccountInfo},
     entrypoint::ProgramResult,
-    msg,
     program::invoke_signed,
     pubkey::Pubkey,
     rent::Rent,
@@ -44,8 +43,6 @@ pub(crate) fn create_card_account(
         &[user.clone(), card_account_pda.clone()],
         &[&[user.key.as_ref(), &[bump]]],
     )?;
-
-    msg!("{:?}", card);
 
     card.serialize(&mut (&mut RefCell::borrow_mut(&card_account_pda.data)[..]))?;
     Ok(())

@@ -20,7 +20,6 @@ pub mod entrypoint {
     ) -> ProgramResult {
         let command = Card::try_from_slice(_instruction_data);
 
-        msg!("command: {:?}", command);
         #[allow(unused)]
         match command {
             Err(_) => return Err(ProgramError::InvalidArgument),
@@ -34,7 +33,7 @@ pub mod entrypoint {
                 instructions::delete_card_account(_accounts);
             }
             _ => {
-                todo!("Delete accoun of given card")
+                msg!("Bad request")
             }
         }
 

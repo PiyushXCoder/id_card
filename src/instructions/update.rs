@@ -2,7 +2,6 @@ use borsh::{BorshDeserialize, BorshSerialize};
 use solana_program::{
     account_info::{next_account_info, AccountInfo},
     entrypoint::ProgramResult,
-    msg,
     program::invoke,
     rent::Rent,
     system_instruction,
@@ -30,8 +29,6 @@ pub(crate) fn update_card_account(
     if let Some(v) = bio {
         card.bio = v;
     }
-
-    msg!("{:?}", card);
 
     let card_account_span = (borsh::to_vec(&card)?).len();
     let lamports_required = (Rent::get()?).minimum_balance(card_account_span);
