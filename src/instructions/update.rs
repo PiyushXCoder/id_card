@@ -3,6 +3,10 @@ use solana_program::{
     account_info::{next_account_info, AccountInfo},
     entrypoint::ProgramResult,
     msg,
+    program::invoke,
+    rent::Rent,
+    system_instruction,
+    sysvar::Sysvar,
 };
 use std::cell::RefCell;
 
@@ -14,6 +18,7 @@ pub(crate) fn update_card_account(
     bio: Option<String>,
 ) -> ProgramResult {
     let account_iter = &mut accounts.iter();
+    let user = next_account_info(account_iter)?;
     let card_account_pda = next_account_info(account_iter)?;
 
     let mut card = Card::try_from_slice(*card_account_pda.data.borrow()).unwrap();
@@ -28,9 +33,21 @@ pub(crate) fn update_card_account(
 
     msg!("{:?}", card);
 
-    if card_account_pda.data_len() < (borsh::to_vec(&card)?).len() {
-        todo!("Increase data size if small");
+    let card_account_span = (borsh::to_vec(&card)?).len();
+    let lamports_required = (Rent::get()?).minimum_balance(card_account_span);
+
+    if lamports_required > card_account_pda.lamports() {
+        invoke(
+            &system_instruction::transfer(
+                user.key,
+                card_account_pda.key,
+                lamports_required - card_account_pda.lamports(),
+            ),
+            &[user.clone(), card_account_pda.clone()],
+        )?;
     }
+
+    card_account_pda.realloc((borsh::to_vec(&card)?).len(), false)?;
 
     card.serialize(&mut (&mut RefCell::borrow_mut(&card_account_pda.data)[..]))?;
     Ok(())

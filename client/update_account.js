@@ -30,7 +30,7 @@ const [pda, _] = PublicKey.findProgramAddressSync(
 const data = {
   Update: {
     name: "Yay",
-    bio: "Yhe bio",
+    bio: "Yhe yay solana!",
   },
 };
 const encoded = borsh.serialize(cardDataSchema, data);
@@ -43,14 +43,19 @@ tx.add(
     programId: programId,
     keys: [
       {
+        pubkey: keyPair.publicKey,
+        isSigner: true,
+        isWritable: true,
+      },
+      {
         pubkey: pda,
         isSigner: false,
         isWritable: true,
       },
       {
-        pubkey: keyPair.publicKey,
-        isSigner: true,
-        isWritable: true,
+        pubkey: SystemProgram.programId,
+        isSigner: false,
+        isWritable: false,
       },
     ],
     data: Buffer.from(encoded),
