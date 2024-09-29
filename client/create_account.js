@@ -2,7 +2,6 @@ import {
   Connection,
   PublicKey,
   SystemProgram,
-  SYSVAR_RENT_PUBKEY,
   Transaction,
   TransactionInstruction,
 } from "@solana/web3.js";

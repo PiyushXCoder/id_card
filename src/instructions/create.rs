@@ -1,3 +1,4 @@
+use borsh::BorshSerialize;
 use solana_program::{
     account_info::{next_account_info, AccountInfo},
     entrypoint::ProgramResult,
@@ -7,6 +8,7 @@ use solana_program::{
     system_instruction,
     sysvar::Sysvar,
 };
+use std::cell::RefCell;
 
 use crate::states::Card;
 
@@ -49,5 +51,6 @@ pub(crate) fn create_card_account(
         &[&[user.key.as_ref(), &[bump]]],
     )?;
 
+    card.serialize(&mut (&mut RefCell::borrow_mut(&card_account_pda.data)[..]))?;
     Ok(())
 }
