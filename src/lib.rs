@@ -5,7 +5,7 @@ pub(crate) mod states;
 pub mod entrypoint {
     use borsh::{BorshDeserialize, BorshSerialize};
     use solana_program::{
-        account_info::AccountInfo, entrypoint::ProgramResult, program_error::ProgramError,
+        account_info::AccountInfo, entrypoint::ProgramResult, msg, program_error::ProgramError,
         pubkey::Pubkey,
     };
 
@@ -20,14 +20,16 @@ pub mod entrypoint {
     ) -> ProgramResult {
         let command = Card::try_from_slice(_instruction_data);
 
+        msg!("command: {:?}", command);
         #[allow(unused)]
         match command {
             Err(_) => return Err(ProgramError::InvalidArgument),
             Ok(Card::Create { name, bio, bump }) => {
                 instructions::create_card_account(_program_id, _accounts, &name, &bio, bump);
             }
-            Ok(Card::Update { field, value }) => {
-                todo!("Update account with new card info")
+            Ok(Card::Update { name, bio }) => {
+                msg!("In update");
+                instructions::update_card_account(_accounts, name, bio);
             }
             Ok(Card::Delete) => {}
             _ => {
@@ -40,8 +42,15 @@ pub mod entrypoint {
 
     #[derive(BorshSerialize, BorshDeserialize, Debug)]
     enum Card {
-        Create { name: String, bio: String, bump: u8 },
-        Update { field: String, value: String },
+        Create {
+            name: String,
+            bio: String,
+            bump: u8,
+        },
+        Update {
+            name: Option<String>,
+            bio: Option<String>,
+        },
         Delete,
     }
 }

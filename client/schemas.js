@@ -7,7 +7,9 @@ const cardDataSchema = {
     },
     {
       struct: {
-        Update: { struct: { name: "string", bio: "string" } },
+        Update: {
+          struct: { name: { option: "string" }, bio: { option: "string" } },
+        },
       },
     },
     {
@@ -18,4 +20,8 @@ const cardDataSchema = {
   ],
 };
 
-export { cardDataSchema };
+const cardSchema = {
+  struct: { name: "string", bio: "string", bump: "u8" },
+};
+
+export { cardDataSchema, cardSchema };
