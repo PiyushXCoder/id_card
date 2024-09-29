@@ -28,7 +28,9 @@ pub(crate) fn update_card_account(
 
     msg!("{:?}", card);
 
-    if card_account_pda.data_len() < (borsh::to_vec(&card)?).len() {}
+    if card_account_pda.data_len() < (borsh::to_vec(&card)?).len() {
+        todo!("Increase data size if small");
+    }
 
     card.serialize(&mut (&mut RefCell::borrow_mut(&card_account_pda.data)[..]))?;
     Ok(())
