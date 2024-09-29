@@ -14,7 +14,7 @@ const cardDataSchema = {
     },
     {
       struct: {
-        Delete: { struct: { id: "u64" } },
+        Delete: { struct: {} },
       },
     },
   ],

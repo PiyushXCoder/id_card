@@ -28,10 +28,11 @@ pub mod entrypoint {
                 instructions::create_card_account(_program_id, _accounts, &name, &bio, bump);
             }
             Ok(Card::Update { name, bio }) => {
-                msg!("In update");
                 instructions::update_card_account(_accounts, name, bio);
             }
-            Ok(Card::Delete) => {}
+            Ok(Card::Delete) => {
+                instructions::delete_card_account(_accounts);
+            }
             _ => {
                 todo!("Delete accoun of given card")
             }
