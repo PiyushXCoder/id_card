@@ -1,7 +1,7 @@
-import { Connection, PublicKey, Transaction } from "@solana/web3.js";
+import { Connection, PublicKey } from "@solana/web3.js";
 import { getKeypairFromFile } from "@solana-developers/helpers";
 import * as borsh from "borsh";
-import { cardDataSchema } from "./schemas.js";
+import { cardSchema } from "./schemas.js";
 import * as process from "process";
 
 const programId = new PublicKey(process.env.PROG);
@@ -18,12 +18,9 @@ const [pda, _] = PublicKey.findProgramAddressSync(
   programId,
 );
 
-const info = await connection.getAccountInfo(pda);
-console.log(info);
+const accountInfo = await connection.getAccountInfo(pda);
+console.log(accountInfo);
 
-const card = borsh.deserialize(
-  cardDataSchema.enum[0].struct.CreateCard,
-  info.data,
-);
+const card = borsh.deserialize(cardSchema, accountInfo.data);
 console.log("Id Card:");
 console.log(card);
